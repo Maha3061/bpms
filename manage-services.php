@@ -2,26 +2,17 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
+if (strlen($_SESSION['bpmsaid']==0)) {
+  header('location:logout.php');
+  } else{
 
-if(isset($_POST['login']))
-  {
-    $adminuser=$_POST['username'];
-    $password=md5($_POST['password']);
-    $query=mysqli_query($con,"select ID from tbladmin where  UserName='$adminuser' && Password='$password' ");
-    $ret=mysqli_fetch_array($query);
-    if($ret>0){
-      $_SESSION['bpmsaid']=$ret['ID'];
-     header('location:dashboard.php');
-    }
-    else{
-    $msg="Invalid Details.";
-    }
-  }
+
+
   ?>
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>BPMS | Login Page </title>
+<title>BPMS || Manage Services</title>
 
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Bootstrap Core CSS -->
@@ -53,45 +44,40 @@ if(isset($_POST['login']))
 </head> 
 <body class="cbp-spmenu-push">
 	<div class="main-content">
-		
+		<!--left-fixed -navigation-->
+		 <?php include_once('includes/sidebar.php');?>
+		<!--left-fixed -navigation-->
+		<!-- header-starts -->
+		 <?php include_once('includes/header.php');?>
+		<!-- //header-ends -->
 		<!-- main content start-->
 		<div id="page-wrapper">
-			<div class="main-page login-page ">
-				<h3 class="title1">SignIn Page</h3>
-				<div class="widget-shadow">
-					<div class="login-top">
-						<h4>Welcome back to BPMS AdminPanel ! </h4>
-					</div>
-					<div class="login-body">
-						<form role="form" method="post" action="">
-							<p style="font-size:16px; color:red" align="center"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-							<input type="text" class="user" name="username" placeholder="Username" required="true">
-							<input type="password" name="password" class="lock" placeholder="Password" required="true">
-							<input type="submit" name="login" value="Sign In">
-							<div class="forgot-grid">
-								
-								<div class="forgot">
-									<a href="../index.php">Back to Home</a>
-								</div>
-								<div class="clearfix"> </div>
-							</div>
-							<div class="forgot-grid">
-								
-								<div class="forgot">
-									<a href="forgot-password.php">forgot password?</a>
-								</div>
-								<div class="clearfix"> </div>
-							</div>
-						</form>
+			<div class="main-page">
+				<div class="tables">
+					<h3 class="title1">Manage Services</h3>
+					
+					
+				
+					<div class="table-responsive bs-example widget-shadow">
+						<h4>Update Services:</h4>
+						<table class="table table-bordered"> <thead> <tr> <th>#</th> <th>Service Name</th> <th>Service Price</th> <th>Creation Date</th><th>Action</th> </tr> </thead> <tbody>
+<?php
+$ret=mysqli_query($con,"select *from  tblservices");
+$cnt=1;
+while ($row=mysqli_fetch_array($ret)) {
+
+?>
+
+						 <tr> <th scope="row"><?php echo $cnt;?></th> <td><?php  echo $row['ServiceName'];?></td> <td><?php  echo $row['Cost'];?></td><td><?php  echo $row['CreationDate'];?></td> <td><a href="edit-services.php?editid=<?php echo $row['ID'];?>">Edit</a></td> </tr>   <?php 
+$cnt=$cnt+1;
+}?></tbody> </table> 
 					</div>
 				</div>
-				
-				
 			</div>
 		</div>
-		
+		<!--footer-->
+		 <?php include_once('includes/footer.php');?>
+        <!--//footer-->
 	</div>
 	<!-- Classie -->
 		<script src="js/classie.js"></script>
@@ -118,6 +104,7 @@ if(isset($_POST['login']))
 	<script src="js/scripts.js"></script>
 	<!--//scrolling js-->
 	<!-- Bootstrap Core JavaScript -->
-   <script src="js/bootstrap.js"> </script>
+	<script src="js/bootstrap.js"> </script>
 </body>
 </html>
+<?php }  ?>
